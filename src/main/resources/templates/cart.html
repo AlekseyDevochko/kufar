@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина — Куфар</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="logo">Kufar</a>
+        <div class="user-menu">
+            <div class="user-authenticated">
+                <a th:href="@{/profile}" class="profile-link">
+                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
+                    <span class="username" th:text="${#authentication.name}">user</span>
+                </a>
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="btn-logout">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container dashboard">
+
+    <div th:if="${param.delivery == 'ok'}" class="alert alert-success">
+        Заказ оформлен. Оплата при получении — курьер свяжется с вами.
+    </div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+    <div class="cart-header">
+        <h1>Корзина <span class="badge" th:text="${items.size()}">0</span></h1>
+        <form th:if="${!items.isEmpty()}" th:action="@{/cart/clear}" method="post">
+            <button type="submit" class="btn-danger btn-sm"
+                    onclick="return confirm('Очистить корзину?');">
+                🗑 Очистить корзину
+            </button>
+        </form>
+    </div>
+
+    <div th:if="${items.isEmpty()}" class="empty-state">
+        <p class="empty-icon">🛒</p>
+        <h2>Корзина пуста</h2>
+        <p><a th:href="@{/}">Перейти к объявлениям</a></p>
+    </div>
+
+    <div th:unless="${items.isEmpty()}" class="cart-layout">
+
+        <!-- Левая колонка: список товаров -->
+        <div class="cart-items">
+            <div th:each="item : ${items}" class="cart-item">
+                <a th:href="@{'/ads/' + ${item.advertisement.id}}" class="cart-item-image">
+                    <img th:if="${item.advertisement.images != null and !item.advertisement.images.isEmpty()}"
+                         th:src="'data:' + ${item.advertisement.images[0].contentType}
+                                 + ';base64,' + ${item.advertisement.images[0].base64Data}"
+                         th:alt="${item.advertisement.title}">
+                    <div th:if="${item.advertisement.images == null or item.advertisement.images.isEmpty()}"
+                         class="no-image">📷</div>
+                </a>
+                <div class="cart-item-info">
+                    <h3><a th:href="@{'/ads/' + ${item.advertisement.id}}"
+                           th:text="${item.advertisement.title}"></a></h3>
+                    <p class="product-city">📍 <span th:text="${item.advertisement.city}"></span></p>
+                    <p class="product-price" th:text="${item.advertisement.price} + ' BYN'"></p>
+                </div>
+                <form th:action="@{'/cart/remove/' + ${item.id}}" method="post" class="cart-item-remove">
+                    <button type="submit" class="btn-icon" title="Удалить">✖</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Правая колонка: итог + оформление -->
+        <aside class="cart-summary">
+            <h2>Итого</h2>
+            <div class="summary-row">
+                <span>Товаров:</span>
+                <strong th:text="${items.size()}">0</strong>
+            </div>
+            <div class="summary-row summary-total">
+                <span>К оплате:</span>
+                <strong th:text="${total} + ' BYN'">0 BYN</strong>
+            </div>
+
+            <form th:action="@{/cart/checkout}" method="post" class="payment-method-form">
+                <h3>Способ оплаты</h3>
+                <label class="radio-card">
+                    <input type="radio" name="method" value="card" checked>
+                    <span class="radio-title">💳 Оплатить сразу</span>
+                    <span class="radio-hint">Банковской картой онлайн</span>
+                </label>
+                <label class="radio-card">
+                    <input type="radio" name="method" value="delivery">
+                    <span class="radio-title">📦 Оплата при получении</span>
+                    <span class="radio-hint">Наличными или картой курьеру</span>
+                </label>
+
+                <button type="submit" class="btn-primary btn-block">Оформить заказ</button>
+            </form>
+        </aside>
+    </div>
+</main>
+
+</body>
+</html>

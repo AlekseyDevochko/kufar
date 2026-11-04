@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой профиль — Куфар</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a th:href="@{/static}" class="logo">Kufar</a>
+        <div class="user-menu">
+            <div class="user-authenticated">
+                <a th:href="@{/cart}" class="header-cart" title="Корзина">🛒 Корзина</a>
+                <a th:href="@{/templates/profile}" class="profile-link">
+                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
+                    <span class="username" th:text="${#authentication.name}">user</span>
+                </a>
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="btn-logout">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container dashboard">
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+    <!-- Карточка профиля -->
+    <section class="profile-card">
+        <div class="profile-avatar" th:text="${user.fullName.substring(0,1).toUpperCase()}">U</div>
+        <div class="profile-info">
+            <h1 th:text="${user.fullName}">Имя</h1>
+            <p class="profile-username">@<span th:text="${user.username}"></span></p>
+            <ul class="profile-meta">
+                <li>📧 <span th:text="${user.email}"></span></li>
+                <li>📞 <span th:text="${user.phoneNumber}"></span></li>
+                <li>📍 <span th:text="${user.city}"></span></li>
+                <li th:if="${user.registrationDate != null}">
+                    📅 На сайте с
+                    <span th:text="${#temporals.format(user.registrationDate, 'dd.MM.yyyy')}"></span>
+                </li>
+            </ul>
+        </div>
+        <div class="profile-actions">
+            <a th:href="@{/profile/edit}" class="btn-secondary">Редактировать профиль</a>
+            <a th:href="@{/ads/new}" class="btn-primary">+ Добавить товар</a>
+        </div>
+    </section>
+
+    <!-- Мои объявления -->
+    <section class="my-ads">
+        <h2 class="section-title">
+            Мои объявления
+            <span class="badge" th:text="${advertisements.size()}">0</span>
+        </h2>
+
+        <div th:if="${advertisements.isEmpty()}" class="empty-state">
+            <p class="empty-icon">📦</p>
+            <h3>У вас пока нет объявлений</h3>
+            <p>Разместите первый товар — это бесплатно.</p>
+            <a th:href="@{/ads/new}" class="btn-primary">+ Добавить товар</a>
+        </div>
+
+        <div th:unless="${advertisements.isEmpty()}" class="products products--grid">
+            <article th:each="ad : ${advertisements}" class="product-card">
+                <a th:href="@{'/ads/' + ${ad.id}}" class="product-image-link">
+                    <div class="product-image">
+                        <img th:if="${ad.images != null and !ad.images.isEmpty()}"
+                             th:src="'data:' + ${ad.images[0].contentType} + ';base64,' + ${ad.images[0].base64Data}"
+                             th:alt="${ad.title}">
+                        <div th:if="${ad.images == null or ad.images.isEmpty()}" class="no-image">📷</div>
+                    </div>
+                </a>
+                <div class="product-info">
+                    <h3 class="product-title">
+                        <a th:href="@{'/ads/' + ${ad.id}}" th:text="${ad.title}"></a>
+                    </h3>
+                    <p class="product-price" th:text="${ad.price} + ' BYN'"></p>
+                    <p class="product-city">📍 <span th:text="${ad.city}"></span></p>
+                    <div class="card-actions">
+                        <a th:href="@{'/ads/' + ${ad.id} + '/edit'}" class="btn-secondary btn-sm">✏ Изменить</a>
+                        <form th:action="@{'/ads/' + ${ad.id} + '/delete'}" method="post"
+                              onsubmit="return confirm('Удалить объявление?');">
+                            <button type="submit" class="btn-danger btn-sm">🗑 Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

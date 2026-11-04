@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${mode == 'create'} ? 'Новое объявление — Куфар' : 'Редактирование — Куфар'"></title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="logo">Kufar</a>
+        <div class="user-menu">
+            <div class="user-authenticated">
+                <a th:href="@{/cart}" class="header-cart">🛒 Корзина</a>
+                <a th:href="@{/profile}" class="profile-link">
+                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
+                    <span class="username" th:text="${#authentication.name}">user</span>
+                </a>
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="btn-logout">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container dashboard">
+    <div class="form-card">
+        <h1 th:text="${mode == 'create'} ? 'Новое объявление' : 'Редактировать объявление'"></h1>
+
+        <form th:action="${mode == 'create'} ? @{/ads/new} : @{'/ads/' + ${adId} + '/edit'}"
+              th:object="${ad}"
+              method="post"
+              enctype="multipart/form-data"
+              novalidate>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('title')} ? 'has-error'">
+                <label for="title">Заголовок</label>
+                <input id="title" type="text" th:field="*{title}" placeholder="iPhone 14 Pro, 256GB">
+                <span class="error-message" th:if="${#fields.hasErrors('title')}"
+                      th:errors="*{title}"></span>
+            </div>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('description')} ? 'has-error'">
+                <label for="description">Описание</label>
+                <textarea id="description" th:field="*{description}" rows="6"
+                          placeholder="Подробное описание товара…"></textarea>
+                <span class="error-message" th:if="${#fields.hasErrors('description')}"
+                      th:errors="*{description}"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" th:classappend="${#fields.hasErrors('price')} ? 'has-error'">
+                    <label for="price">Цена, BYN</label>
+                    <input id="price" type="number" step="0.01" min="0.01" th:field="*{price}">
+                    <span class="error-message" th:if="${#fields.hasErrors('price')}"
+                          th:errors="*{price}"></span>
+                </div>
+
+                <div class="form-group" th:classappend="${#fields.hasErrors('city')} ? 'has-error'">
+                    <label for="city">Город</label>
+                    <input id="city" type="text" th:field="*{city}" placeholder="Минск">
+                    <span class="error-message" th:if="${#fields.hasErrors('city')}"
+                          th:errors="*{city}"></span>
+                </div>
+            </div>
+
+            <!-- Текущие изображения (только при редактировании) -->
+            <div th:if="${existingImages != null and !existingImages.isEmpty()}" class="form-group">
+                <label>Текущие фото</label>
+                <div class="image-thumbs">
+                    <img th:each="img : ${existingImages}"
+                         th:src="'data:' + ${img.contentType} + ';base64,' + ${img.base64Data}"
+                         class="thumb" alt="Фото">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="images">Добавить фото (до 10)</label>
+                <input id="images" type="file" name="images" multiple accept="image/*">
+                <small class="hint">Новые изображения будут добавлены к существующим.</small>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/profile}" class="btn-secondary">Отмена</a>
+                <button type="submit" class="btn-primary"
+                        th:text="${mode == 'create'} ? 'Опубликовать' : 'Сохранить'"></button>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

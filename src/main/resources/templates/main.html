@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Куфар — главная</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="logo">Kufar</a>
+
+        <!-- Строка поиска (внутри формы фильтра) -->
+        <form th:action="@{/}" method="get" class="search-form" id="filterForm">
+            <input type="hidden" name="view" th:value="${view}">
+            <div class="search-bar">
+                <input type="text"
+                       name="keyword"
+                       th:value="${filter.keyword}"
+                       placeholder="Что ищем? Например, iPhone или велосипед">
+                <button type="submit" class="search-btn">🔍</button>
+            </div>
+
+            <!-- Фильтры -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Цена, BYN:</label>
+                    <input type="number"
+                           name="minPrice"
+                           th:value="${filter.minPrice}"
+                           placeholder="от"
+                           min="0" step="0.01">
+                    <span class="dash">—</span>
+                    <input type="number"
+                           name="maxPrice"
+                           th:value="${filter.maxPrice}"
+                           placeholder="до"
+                           min="0" step="0.01">
+                </div>
+
+                <div class="filter-group">
+                    <label>Город:</label>
+                    <select name="city">
+                        <option value="">Все города</option>
+                        <option th:each="c : ${cities}"
+                                th:value="${c}"
+                                th:text="${c}"
+                                th:selected="${c == filter.city}"></option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Сортировка:</label>
+                    <select name="sortBy">
+                        <option value="createdDate" th:selected="${filter.sortBy == 'createdDate'}">Новые</option>
+                        <option value="price"       th:selected="${filter.sortBy == 'price'}">По цене</option>
+                        <option value="title"       th:selected="${filter.sortBy == 'title'}">По названию</option>
+                    </select>
+                    <select name="sortDirection">
+                        <option value="desc" th:selected="${filter.sortDirection == 'desc'}">↓</option>
+                        <option value="asc"  th:selected="${filter.sortDirection == 'asc'}">↑</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-apply">Применить</button>
+                <a th:href="@{/}" class="btn-reset">Сбросить</a>
+            </div>
+        </form>
+
+        <!-- Меню пользователя (правый верх) -->
+        <div class="user-menu">
+            <!-- Если авторизован -->
+            <div sec:authorize="isAuthenticated()" class="user-authenticated">
+                <a th:href="@{/cart}" class="header-cart">🛒 Корзина</a>
+                <a th:href="@{/profile}" class="profile-link" title="Личный кабинет">
+                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
+                    <span class="username" th:text="${#authentication.name}">user</span>
+                </a>
+                <form th:action="@{/auth/logout}" method="post" class="logout-form">
+                    <button type="submit" class="btn-logout">Выйти</button>
+                </form>
+            </div>
+
+            <!-- Если не авторизован -->
+            <div sec:authorize="!isAuthenticated()" class="user-anonymous">
+                <a th:href="@{/auth/login}" class="btn-login">Войти</a>
+                <a th:href="@{/auth/register}" class="btn-register">Регистрация</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ===================== CONTENT ===================== -->
+<main class="container main-content">
+
+    <div class="results-header">
+        <h1 class="results-title">
+            Найдено объявлений: <span th:text="${page.totalElements}">0</span>
+        </h1>
+
+        <!-- Переключатель вида -->
+        <div class="view-toggle">
+            <a th:href="@{/(view='grid', keyword=${filter.keyword}, minPrice=${filter.minPrice}, maxPrice=${filter.maxPrice}, city=${filter.city}, sortBy=${filter.sortBy}, sortDirection=${filter.sortDirection}, page=${filter.page})}"
+               class="view-btn"
+               th:classappend="${view == 'grid'} ? 'active'"
+               title="Сеткой">▦</a>
+            <a th:href="@{/(view='list', keyword=${filter.keyword}, minPrice=${filter.minPrice}, maxPrice=${filter.maxPrice}, city=${filter.city}, sortBy=${filter.sortBy}, sortDirection=${filter.sortDirection}, page=${filter.page})}"
+               class="view-btn"
+               th:classappend="${view == 'list'} ? 'active'"
+               title="Списком">☰</a>
+        </div>
+    </div>
+
+    <!-- Пустой результат -->
+    <div th:if="${page.empty}" class="empty-state">
+        <p class="empty-icon">🔍</p>
+        <h2>Ничего не найдено</h2>
+        <p>Попробуйте изменить параметры поиска или <a th:href="@{/}">сбросить фильтры</a>.</p>
+    </div>
+
+    <!-- Список товаров -->
+    <div th:unless="${page.empty}"
+         class="products"
+         th:classappend="'products--' + ${view}">
+
+        <article th:each="ad : ${page.content}"
+                 class="product-card">
+
+            <a th:href="@{'/ads/' + ${ad.id}}" class="product-image-link">
+                <div class="product-image">
+                    <img th:if="${ad.images != null and !ad.images.isEmpty()}"
+                         th:src="'data:' + ${ad.images[0].contentType} + ';base64,' + ${ad.images[0].base64Data}"
+                         th:alt="${ad.title}">
+                    <div th:if="${ad.images == null or ad.images.isEmpty()}"
+                         class="no-image">📷</div>
+                </div>
+            </a>
+
+            <div class="product-info">
+                <h3 class="product-title">
+                    <a th:href="@{'/ads/' + ${ad.id}}" th:text="${ad.title}">Название</a>
+                </h3>
+                <p class="product-price" th:text="${ad.price} + ' BYN'">0 BYN</p>
+                <p class="product-city">📍 <span th:text="${ad.city}">Город</span></p>
+                <p class="product-date" th:text="${#temporals.format(ad.createdDate, 'dd.MM.yyyy HH:mm')}"></p>
+                <p class="product-seller">
+                    Продавец:
+                    <a th:href="@{'/users/' + ${ad.sellerId}}" th:text="${ad.sellerName}">Имя</a>
+                </p>
+
+                <!-- Кнопка "В корзину" -->
+                <div class="product-actions">
+                    <form sec:authorize="isAuthenticated()"
+                          th:action="@{'/cart/add/' + ${ad.id}}"
+                          method="post" style="width:100%">
+                        <button type="submit" class="btn-cart">🛒 В корзину</button>
+                    </form>
+                    <a sec:authorize="!isAuthenticated()"
+                       th:href="@{/auth/login}"
+                       class="btn-cart btn-cart--login">
+                        🛒 В корзину
+                    </a>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <!-- Пагинация -->
+    <nav th:if="${page.totalPages > 1}" class="pagination">
+        <a th:if="${page.hasPrevious()}"
+           th:href="@{/(keyword=${filter.keyword}, minPrice=${filter.minPrice}, maxPrice=${filter.maxPrice}, city=${filter.city}, sortBy=${filter.sortBy}, sortDirection=${filter.sortDirection}, view=${view}, page=${page.number - 1})}"
+           class="page-btn">← Назад</a>
+
+        <span class="page-info">
+            Стр. <strong th:text="${page.number + 1}">1</strong>
+            из <strong th:text="${page.totalPages}">1</strong>
+        </span>
+
+        <a th:if="${page.hasNext()}"
+           th:href="@{/(keyword=${filter.keyword}, minPrice=${filter.minPrice}, maxPrice=${filter.maxPrice}, city=${filter.city}, sortBy=${filter.sortBy}, sortDirection=${filter.sortDirection}, view=${view}, page=${page.number + 1})}"
+           class="page-btn">Вперёд →</a>
+    </nav>
+</main>
+
+<footer class="footer">
+    <div class="container">© 2026 Kufar Clone. Учебный проект.</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование профиля — Куфар</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a th:href="@{/static}" class="logo">Kufar</a>
+        <div class="user-menu">
+            <div class="user-authenticated">
+                <a th:href="@{/cart}" class="header-cart">🛒 Корзина</a>
+                <a th:href="@{/templates/profile}" class="profile-link">
+                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
+                    <span class="username" th:text="${#authentication.name}">user</span>
+                </a>
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="btn-logout">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container dashboard">
+    <div class="form-card">
+        <h1>Редактирование профиля</h1>
+
+        <form th:action="@{/profile/edit}" th:object="${profile}" method="post" novalidate>
+            <div class="form-group" th:classappend="${#fields.hasErrors('fullName')} ? 'has-error'">
+                <label for="fullName">ФИО</label>
+                <input id="fullName" type="text" th:field="*{fullName}" placeholder="Иванов Иван">
+                <span class="error-message" th:if="${#fields.hasErrors('fullName')}"
+                      th:errors="*{fullName}"></span>
+            </div>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('email')} ? 'has-error'">
+                <label for="email">Email</label>
+                <input id="email" type="email" th:field="*{email}">
+                <span class="error-message" th:if="${#fields.hasErrors('email')}"
+                      th:errors="*{email}"></span>
+            </div>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('phoneNumber')} ? 'has-error'">
+                <label for="phoneNumber">Телефон</label>
+                <input id="phoneNumber" type="tel" th:field="*{phoneNumber}">
+                <span class="error-message" th:if="${#fields.hasErrors('phoneNumber')}"
+                      th:errors="*{phoneNumber}"></span>
+            </div>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('city')} ? 'has-error'">
+                <label for="city">Город</label>
+                <input id="city" type="text" th:field="*{city}">
+                <span class="error-message" th:if="${#fields.hasErrors('city')}"
+                      th:errors="*{city}"></span>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/templates/profile}" class="btn-secondary">Отмена</a>
+                <button type="submit" class="btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

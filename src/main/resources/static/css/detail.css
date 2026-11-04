@@ -1,0 +1,118 @@
+.detail-page { padding: 30px 20px 60px; }
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--primary);
+    font-size: 15px;
+    font-weight: 500;
+}
+.back-link:hover { text-decoration: underline; }
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-gallery { display: flex; flex-direction: column; gap: 12px; }
+.gallery-main {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f3f4f6;
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gallery-main img { width: 100%; height: 100%; object-fit: contain; }
+.gallery-main.no-image { font-size: 80px; color: #9ca3af; }
+
+.gallery-thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+}
+.thumb {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .2s;
+}
+.thumb:hover { border-color: var(--primary); }
+
+.detail-title { font-size: 26px; margin-bottom: 12px; }
+.detail-price {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: var(--text-muted);
+}
+.detail-meta strong { color: var(--text); }
+
+.detail-description h2,
+.seller-card h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.detail-description p {
+    white-space: pre-wrap;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 24px;
+}
+
+.seller-card {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+}
+.seller-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background .2s;
+}
+.seller-link:hover { background: var(--white); }
+.seller-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+.seller-name { font-weight: 600; }
+
+@media (max-width: 768px) {
+    .detail-layout { grid-template-columns: 1fr; padding: 20px; gap: 24px; }
+    .detail-title { font-size: 20px; }
+    .detail-price { font-size: 24px; }
+}

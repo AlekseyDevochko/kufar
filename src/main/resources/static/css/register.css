@@ -1,0 +1,396 @@
+/* ==== Сброс и базовые стили ==== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #00a046;          /* фирменный зелёный "Куфар" */
+    --primary-hover: #008038;
+    --primary-light: #e6f7ee;
+    --danger: #e53935;
+    --text: #1f2937;
+    --text-muted: #6b7280;
+    --border: #d1d5db;
+    --border-focus: #00a046;
+    --bg: #f3f4f6;
+    --white: #ffffff;
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    --radius: 10px;
+}
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+}
+
+/* ==== Общий layout ==== */
+.page {
+    display: flex;
+    min-height: 100vh;
+    align-items: stretch;
+}
+
+/* ==== Левая панель с брендингом ==== */
+.brand-panel {
+    flex: 1;
+    background: linear-gradient(135deg, #00a046 0%, #007a35 100%);
+    color: var(--white);
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-panel::before {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    top: -150px;
+    right: -150px;
+}
+
+.brand-panel::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    bottom: -100px;
+    left: -100px;
+}
+
+.brand-logo {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-title {
+    font-size: 38px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-subtitle {
+    font-size: 16px;
+    line-height: 1.7;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-features {
+    list-style: none;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.brand-features .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* ==== Правая панель с формой ==== */
+.form-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: var(--white);
+    overflow-y: auto;
+}
+
+.register-form {
+    width: 100%;
+    max-width: 460px;
+    padding: 20px 0;
+}
+
+.form-header {
+    margin-bottom: 28px;
+}
+
+.form-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.form-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* ==== Группы полей ==== */
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: #fafafa;
+    color: var(--text);
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.form-group input::placeholder {
+    color: #9ca3af;
+}
+
+.form-group input:hover {
+    border-color: #9ca3af;
+}
+
+.form-group input:focus {
+    border-color: var(--border-focus);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(0, 160, 70, 0.15);
+}
+
+/* Поле с ошибкой */
+.form-group.has-error input {
+    border-color: var(--danger);
+    background: #fff5f5;
+}
+
+.form-group.has-error input:focus {
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15);
+}
+
+.error-message {
+    font-size: 13px;
+    color: var(--danger);
+    padding-left: 2px;
+    display: block;
+}
+
+/* Глобальные ошибки */
+.global-errors {
+    background: #fff5f5;
+    border: 1px solid #fecaca;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    color: var(--danger);
+    font-size: 14px;
+}
+
+/* ==== Обёртка пароля с кнопкой-глазом ==== */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 44px !important;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    line-height: 1;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    background: #f3f4f6;
+}
+
+/* ==== Чекбокс согласия ==== */
+.checkbox-group {
+    margin-top: 4px;
+    margin-bottom: 22px;
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 400 !important;
+    color: var(--text-muted) !important;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ==== Кнопка отправки ==== */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 160, 70, 0.25);
+}
+
+.btn-submit:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 6px 16px rgba(0, 160, 70, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 160, 70, 0.25);
+}
+
+/* ==== Ссылки и переключение ==== */
+.link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+.switch-auth {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* ==== Адаптивность ==== */
+@media (max-width: 900px) {
+    .brand-panel {
+        display: none;
+    }
+
+    .form-panel {
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-panel {
+        padding: 24px 16px;
+    }
+
+    .form-header h2 {
+        font-size: 24px;
+    }
+
+    .form-group input {
+        padding: 11px 12px;
+        font-size: 14px;
+    }
+
+    .btn-submit {
+        padding: 13px;
+        font-size: 15px;
+    }
+}
+
+/* ==== Ссылка "Забыли пароль?" ==== */
+.login-extras {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+/* ==== Уведомления ==== */
+.alert {
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    margin-bottom: 18px;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background: #e6f7ee;
+    border-color: #a3e2bd;
+    color: #007a35;
+}
+
+.alert-info {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e40af;
+}

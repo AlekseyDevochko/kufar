@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Оплата картой — Куфар</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a th:href="@{/static}" class="logo">Kufar</a>
+        <div class="user-menu">
+            <div class="user-authenticated">
+                <a th:href="@{/cart}" class="header-cart">🛒 Корзина</a>
+                <a th:href="@{/profile}" class="profile-link">
+                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
+                    <span class="username" th:text="${#authentication.name}">user</span>
+                </a>
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="btn-logout">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container dashboard">
+    <div class="form-card">
+        <h1>Оплата картой</h1>
+        <p class="payment-amount">
+            К оплате: <strong th:text="${card.amount} + ' BYN'">0 BYN</strong>
+        </p>
+
+        <form th:action="@{/payment/card}" th:object="${card}" method="post" novalidate>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('cardNumber')} ? 'has-error'">
+                <label for="cardNumber">Номер карты</label>
+                <input id="cardNumber" type="text" th:field="*{cardNumber}"
+                       placeholder="0000 0000 0000 0000"
+                       maxlength="19" inputmode="numeric" autocomplete="cc-number">
+                <span class="error-message" th:if="${#fields.hasErrors('cardNumber')}"
+                      th:errors="*{cardNumber}"></span>
+            </div>
+
+            <div class="form-group" th:classappend="${#fields.hasErrors('cardHolder')} ? 'has-error'">
+                <label for="cardHolder">Держатель карты</label>
+                <input id="cardHolder" type="text" th:field="*{cardHolder}"
+                       placeholder="IVAN IVANOV" autocomplete="cc-name"
+                       style="text-transform: uppercase;">
+                <span class="error-message" th:if="${#fields.hasErrors('cardHolder')}"
+                      th:errors="*{cardHolder}"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" th:classappend="${#fields.hasErrors('expiry')} ? 'has-error'">
+                    <label for="expiry">Срок действия</label>
+                    <input id="expiry" type="text" th:field="*{expiry}"
+                           placeholder="MM/YY" maxlength="5"
+                           inputmode="numeric" autocomplete="cc-exp">
+                    <span class="error-message" th:if="${#fields.hasErrors('expiry')}"
+                          th:errors="*{expiry}"></span>
+                </div>
+
+                <div class="form-group" th:classappend="${#fields.hasErrors('cvv')} ? 'has-error'">
+                    <label for="cvv">CVV</label>
+                    <input id="cvv" type="password" th:field="*{cvv}"
+                           placeholder="•••" maxlength="3"
+                           inputmode="numeric" autocomplete="cc-csc">
+                    <span class="error-message" th:if="${#fields.hasErrors('cvv')}"
+                          th:errors="*{cvv}"></span>
+                </div>
+            </div>
+
+            <input type="hidden" th:field="*{amount}">
+
+            <div class="form-actions">
+                <a th:href="@{/cart}" class="btn-secondary">← Назад в корзину</a>
+                <button type="submit" class="btn-primary">Оплатить</button>
+            </div>
+            <p class="hint" style="text-align:center; margin-top:12px;">
+                🔒 Заглушка — реальная оплата пока не подключена
+            </p>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

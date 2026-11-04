@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${ad.title} + ' — Куфар'">Объявление</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a th:href="@{/static}" class="logo">Kufar</a>
+        <div class="user-menu">
+            <div sec:authorize="isAuthenticated()" class="user-authenticated">
+                <a th:href="@{/profile}" class="profile-link">
+                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
+                    <span class="username" th:text="${#authentication.name}">user</span>
+                </a>
+                <form th:action="@{/auth/logout}" method="post">
+                    <button type="submit" class="btn-logout">Выйти</button>
+                </form>
+            </div>
+            <div sec:authorize="!isAuthenticated()" class="user-anonymous">
+                <a th:href="@{/auth/login}" class="btn-login">Войти</a>
+                <a th:href="@{/auth/register}" class="btn-register">Регистрация</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container detail-page">
+
+    <a th:href="@{/static}" class="back-link">← Назад к объявлениям</a>
+
+    <div class="detail-layout">
+
+        <!-- Галерея -->
+        <div class="detail-gallery">
+            <div th:if="${ad.images == null or ad.images.isEmpty()}" class="gallery-main no-image">📷</div>
+            <div th:if="${ad.images != null and !ad.images.isEmpty()}" class="gallery-main">
+                <img th:src="'data:' + ${ad.images[0].contentType} + ';base64,' + ${ad.images[0].base64Data}"
+                     th:alt="${ad.title}" id="mainImage">
+            </div>
+
+            <div th:if="${ad.images != null and ad.images.size() > 1}" class="gallery-thumbs">
+                <img th:each="img : ${ad.images}"
+                     th:src="'data:' + ${img.contentType} + ';base64,' + ${img.base64Data}"
+                     th:alt="'Фото ' + ${img.id}"
+                     onclick="document.getElementById('mainImage').src=this.src"
+                     class="thumb">
+            </div>
+        </div>
+
+        <!-- Информация -->
+        <div class="detail-info">
+            <h1 class="detail-title" th:text="${ad.title}">Название</h1>
+            <p class="detail-price" th:text="${ad.price} + ' BYN'">0 BYN</p>
+
+            <div class="detail-meta">
+                <p>📍 Город: <strong th:text="${ad.city}">Город</strong></p>
+                <p>📅 Опубликовано: <strong th:text="${#temporals.format(ad.createdDate, 'dd.MM.yyyy HH:mm')}"></strong></p>
+            </div>
+
+            <div class="detail-description">
+                <h2>Описание</h2>
+                <p th:text="${ad.description}">Описание</p>
+            </div>
+
+            <!-- Продавец -->
+            <div class="seller-card">
+                <h2>Продавец</h2>
+                <a th:href="@{'/users/' + ${ad.sellerId}}" class="seller-link">
+                    <span class="seller-avatar" th:text="${ad.sellerName.substring(0,1).toUpperCase()}"></span>
+                    <span class="seller-name" th:text="${ad.sellerName}">Имя</span>
+                </a>
+            </div>
+
+            <!-- Кнопка корзины -->
+            <!-- Блок владельца -->
+            <div sec:authorize="isAuthenticated()"
+                 th:if="${currentUsername != null and currentUsername == ad.sellerUsername}"
+                 class="owner-actions">
+                <a th:href="@{'/ads/' + ${ad.id} + '/edit'}" class="btn-secondary btn-block">✏ Редактировать</a>
+                <form th:action="@{'/ads/' + ${ad.id} + '/delete'}" method="post"
+                      onsubmit="return confirm('Удалить объявление?');">
+                    <button type="submit" class="btn-danger btn-block">🗑 Удалить</button>
+                </form>
+            </div>
+
+            <!-- Кнопка покупки для не-владельцев -->
+            <div th:unless="${currentUsername != null and currentUsername == ad.sellerUsername}">
+                <form sec:authorize="isAuthenticated()"
+                      th:action="@{'/cart/add/' + ${ad.id}}" method="post">
+                    <button type="submit" class="btn-cart btn-cart--big">🛒 Добавить в корзину</button>
+                </form>
+                <a sec:authorize="!isAuthenticated()"
+                   th:href="@{/auth/login}"
+                   class="btn-cart btn-cart--big btn-cart--login">
+                    🛒 Добавить в корзину
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

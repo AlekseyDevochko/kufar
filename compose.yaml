@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: 'postgres:16-alpine'
+    container_name: 'kufar-postgres'
+    restart: unless-stopped # Перезапускать контейнер при сбоях, но не при ручной остановке
+    environment:
+      - 'POSTGRES_DB=mydatabase'
+      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_PASSWORD=secret'
+    ports:
+      - '5433:5432'
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data' # Сохраняет данные между перезапусками
+
+volumes:
+  pgdata:
