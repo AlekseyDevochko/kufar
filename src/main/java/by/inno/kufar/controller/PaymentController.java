@@ -31,7 +31,6 @@ public class PaymentController {
         return "payment/card";
     }
 
-    /** Заглушка: ничего не делает, просто перерисовывает форму */
     @PostMapping("/card")
     public String pay(@AuthenticationPrincipal User user,
                       @Valid @ModelAttribute("card") CardPaymentDto dto,

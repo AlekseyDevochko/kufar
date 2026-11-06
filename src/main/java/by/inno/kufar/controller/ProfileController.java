@@ -35,7 +35,6 @@ public class ProfileController {
 
     @GetMapping
     public String profile(@AuthenticationPrincipal User user, Model model) {
-        // Если не авторизован — редирект на регистрацию (по требованию)
         if (user == null) {
             return "redirect:/auth/register";
         }

@@ -32,7 +32,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
                                @Param("city") String city,
                                Pageable pageable);
 
-    /** Список городов для выпадающего фильтра */
     @Query("SELECT DISTINCT a.city FROM Advertisement a WHERE a.city IS NOT NULL ORDER BY a.city")
     List<String> findAllCities();
 

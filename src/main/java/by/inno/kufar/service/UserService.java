@@ -49,7 +49,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
     }
 
-    // UserService.java — добавьте рядом с findByUsername
     @Transactional(readOnly = true)
     public User findById(Long id) {
         return userRepository.findById(id)

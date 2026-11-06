@@ -42,11 +42,9 @@ public class WebConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
-                        // CRUD объявлений — только авторизованным
                         .requestMatchers("/ads/new", "/ads/*/edit", "/ads/*/delete").authenticated()
-                        // Просмотр объявлений и продавцов — всем
                         .requestMatchers(HttpMethod.GET, "/ads/*", "/users/*").permitAll()
-                        // Профиль доступен, но внутри контроллера редиректит на register, если гость
+                        .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                         .requestMatchers("/profile", "/profile/edit").permitAll()
                         .anyRequest().authenticated()
                 )

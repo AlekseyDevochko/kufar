@@ -34,10 +34,10 @@ public class CartService {
         Advertisement ad = adRepo.findById(adId)
                 .orElseThrow(() -> new IllegalArgumentException("Товар не найден"));
         if (ad.getSeller().getId().equals(user.getId())) {
-            return;   // свои товары не добавляем
+            return;
         }
         if (cartRepo.existsByUserAndAdvertisement(user, ad)) {
-            return;   // уже в корзине
+            return;
         }
         CartItem item = new CartItem();
         item.setUser(user);

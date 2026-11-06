@@ -64,7 +64,6 @@ public class EntityMapper {
         return dto;
     }
 
-    /** Применение DTO регистрации к сущности (пароль хешируется в сервисе!) */
     public User toUserEntity(UserRegistrationDto dto) {
         User user = new User();
         user.setUsername(dto.getUsername());

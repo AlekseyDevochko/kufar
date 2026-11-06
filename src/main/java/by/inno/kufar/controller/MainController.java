@@ -38,7 +38,6 @@ public class MainController {
         return "main";
     }
 
-    // ===== Детальная страница объявления =====
     @GetMapping("/ads/{id}")
     public String advertisementDetail(@PathVariable Long id,
                                       Model model,

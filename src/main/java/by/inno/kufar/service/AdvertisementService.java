@@ -93,7 +93,7 @@ public class AdvertisementService {
         }
         applyFields(ad, dto);
         appendImages(ad, dto.getImages());
-        return entityMapper.toAdvertisementDto(ad);   // JPA save не нужен: сущность managed
+        return entityMapper.toAdvertisementDto(ad);
     }
 
     @Transactional
@@ -108,7 +108,7 @@ public class AdvertisementService {
 
     @Transactional(readOnly = true)
     public List<AdvertisementDto> findBySeller(Long sellerId) {
-        return advertisementRepository.findAll().stream()   // или findBySeller_Id(sellerId, Sort.by("createdDate").descending())
+        return advertisementRepository.findAll().stream()
                 .filter(a -> a.getSeller() != null && a.getSeller().getId().equals(sellerId))
                 .sorted((a, b) -> b.getCreatedDate().compareTo(a.getCreatedDate()))
                 .map(entityMapper::toAdvertisementDto)

@@ -21,7 +21,6 @@ public class AdvertisementController {
         this.service = service;
     }
 
-    // ===== Создание =====
     @GetMapping("/new")
     public String newForm(@AuthenticationPrincipal User user, Model model) {
         if (user == null) return "redirect:/auth/register";
@@ -46,7 +45,6 @@ public class AdvertisementController {
         return "redirect:/profile";
     }
 
-    // ===== Редактирование =====
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id,
                            @AuthenticationPrincipal User user,
@@ -89,7 +87,6 @@ public class AdvertisementController {
         }
     }
 
-    // ===== Удаление =====
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id,
                          @AuthenticationPrincipal User user,

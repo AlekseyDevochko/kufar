@@ -66,7 +66,7 @@ public class AuthController {
                     "Пользователь с таким email уже существует");
         }
         if (bindingResult.hasErrors()) {
-            return "auth/register";   // форма перерисуется с ошибками и старыми значениями
+            return "auth/register";
         }
         userService.register(dto);
         redirectAttributes.addFlashAttribute("success", "Регистрация успешна! Войдите в аккаунт.");
@@ -92,7 +92,6 @@ public class AuthController {
         return "auth/login";
     }
 
-    // ===== POST: аутентификация =====
     @PostMapping("/login")
     public String login(
             @Valid @ModelAttribute("loginDto") LoginDto dto,
@@ -102,18 +101,15 @@ public class AuthController {
             RedirectAttributes redirectAttributes
     ) {
 
-        // 1. Валидация полей DTO
         if (bindingResult.hasErrors()) {
             return "auth/login";
         }
 
         try {
-            // 2. Создаём токен аутентификации и делегируем проверку AuthenticationManager
             Authentication authRequest = new UsernamePasswordAuthenticationToken(
                     dto.getUsername(), dto.getPassword());
             Authentication authResult = authenticationManager.authenticate(authRequest);
 
-            // 3. Вручную сохраняем контекст в SecurityContext и в сессию
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authResult);
             SecurityContextHolder.setContext(context);
@@ -122,7 +118,6 @@ public class AuthController {
                     HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                     context);
 
-            // 4. Редирект с флеш-сообщением
             redirectAttributes.addFlashAttribute("success",
                     "Добро пожаловать, " + authResult.getName() + "!");
             return "redirect:/";

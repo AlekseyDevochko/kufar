@@ -59,7 +59,6 @@ public class CartController {
         if ("card".equals(method)) {
             return "redirect:/payment/card";
         }
-        // Оплата при получении — очищаем корзину и показываем успех
         cartService.clear(user);
         return "redirect:/cart?delivery=ok";
     }
