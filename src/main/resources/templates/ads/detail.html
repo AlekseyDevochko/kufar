@@ -12,7 +12,7 @@
 
 <header class="header">
     <div class="container header-inner">
-        <a th:href="@{/static}" class="logo">Kufar</a>
+        <a th:href="@{/}" class="logo">Kufar</a>
         <div class="user-menu">
             <div sec:authorize="isAuthenticated()" class="user-authenticated">
                 <a th:href="@{/profile}" class="profile-link">
@@ -33,7 +33,7 @@
 
 <main class="container detail-page">
 
-    <a th:href="@{/static}" class="back-link">← Назад к объявлениям</a>
+    <a th:href="@{/}" class="back-link">← Назад к объявлениям</a>
 
     <div class="detail-layout">
 

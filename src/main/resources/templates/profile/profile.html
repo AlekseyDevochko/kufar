@@ -12,11 +12,11 @@
 
 <header class="header">
     <div class="container header-inner">
-        <a th:href="@{/static}" class="logo">Kufar</a>
+        <a th:href="@{/}" class="logo">Kufar</a>
         <div class="user-menu">
             <div class="user-authenticated">
                 <a th:href="@{/cart}" class="header-cart" title="Корзина">🛒 Корзина</a>
-                <a th:href="@{/templates/profile}" class="profile-link">
+                <a th:href="@{/profile}" class="profile-link">
                     <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
                     <span class="username" th:text="${#authentication.name}">user</span>
                 </a>
