@@ -1,5 +1,6 @@
 package by.inno.kufar.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,6 +40,7 @@ public class User implements UserDetails {
     private String city;
     private LocalDateTime registrationDate;
     @OneToMany(mappedBy = "seller")
+    @JsonIgnore
     private List<Advertisement> advertismentList;
 
     @Override

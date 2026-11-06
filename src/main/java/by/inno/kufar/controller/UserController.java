@@ -17,14 +17,19 @@ public class UserController {
     private final UserService userService;
     private final AdvertisementService advertisementService;
 
-    public UserController(UserService userService,
-                          AdvertisementService advertisementService) {
+    public UserController(
+            UserService userService,
+            AdvertisementService advertisementService
+    ) {
         this.userService = userService;
         this.advertisementService = advertisementService;
     }
 
     @GetMapping("/{id}")
-    public String sellerProfile(@PathVariable Long id, Model model) {
+    public String sellerProfile(
+            @PathVariable Long id,
+            Model model
+    ) {
         User seller = userService.findById(id);
         List<AdvertisementDto> sellerAds = advertisementService.findBySeller(id);
 
