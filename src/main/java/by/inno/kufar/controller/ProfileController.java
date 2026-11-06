@@ -44,7 +44,7 @@ public class ProfileController {
 
         model.addAttribute("user", user);
         model.addAttribute("advertisements", myAds);
-        return "profile";
+        return "profile/profile";
     }
 
     @GetMapping("/edit")

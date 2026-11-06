@@ -37,11 +37,11 @@ public class UserService {
     }
 
     public boolean existsByEmail(String email) {
-        return userRepository.findByEmail(email) != null;
+        return userRepository.findByEmail(email).isEmpty();
     }
 
     public boolean existsByUsername(String username) {
-        return userRepository.findByUsername(username) != null;
+        return userRepository.findByUsername(username).isEmpty();
     }
 
     public User findByUsername(String username) {
