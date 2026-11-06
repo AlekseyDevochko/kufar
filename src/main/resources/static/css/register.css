@@ -74,12 +74,23 @@ html, body {
 }
 
 .brand-logo {
+    display: inline-block;       /* Чтобы тег <a> вел себя как блочный элемент */
+    text-decoration: none;       /* Убираем подчеркивание ссылки */
+    color: inherit;              /* Наследуем цвет (белый из родителя) */
+
+    /* Ваши существующие стили */
     font-size: 32px;
     font-weight: 800;
     letter-spacing: 1px;
     margin-bottom: 40px;
     position: relative;
     z-index: 1;
+    cursor: pointer;             /* Курсор-рука при наведении */
+}
+
+/* Опционально: эффект при наведении */
+.brand-logo:hover {
+    opacity: 0.9;
 }
 
 .brand-title {
