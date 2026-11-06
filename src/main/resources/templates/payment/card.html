@@ -15,8 +15,11 @@
             <div class="user-authenticated">
                 <a th:href="@{/cart}" class="header-cart">🛒 Корзина</a>
                 <a th:href="@{/profile}" class="profile-link">
-                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
-                    <span class="username" th:text="${#authentication.name}">user</span>
+    <span class="avatar"
+          th:text="${user != null and !#strings.isEmpty(user.username)
+                    ? #strings.substring(user.username, 0, 1).toUpperCase()
+                    : 'U'}">U</span>
+                    <span class="username" th:text="${user != null ? user.username : 'Пользователь'}">user</span>
                 </a>
                 <form th:action="@{/auth/logout}" method="post">
                     <button type="submit" class="btn-logout">Выйти</button>

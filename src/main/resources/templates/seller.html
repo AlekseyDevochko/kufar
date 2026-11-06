@@ -38,7 +38,7 @@
     <!-- Карточка продавца (публичная, без кнопки "редактировать") -->
     <section class="profile-card">
         <div class="profile-avatar"
-             th:text="${seller.fullName.substring(0,1).toUpperCase()}">U</div>
+             th:text="${seller.fullName != null and !seller.fullName.isEmpty() ? seller.fullName.substring(0,1).toUpperCase() : 'U'}">U</div>
         <div class="profile-info">
             <h1 th:text="${seller.fullName}">Имя</h1>
             <p class="profile-username">@<span th:text="${seller.username}"></span></p>

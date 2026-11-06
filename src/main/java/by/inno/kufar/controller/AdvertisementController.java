@@ -28,6 +28,7 @@ public class AdvertisementController {
             model.addAttribute("ad", new AdvertisementCreateDto());
         }
         model.addAttribute("mode", "create");
+        model.addAttribute("user", user);
         return "ads/form";
     }
 
@@ -35,9 +36,12 @@ public class AdvertisementController {
     public String create(@AuthenticationPrincipal User user,
                          @Valid @ModelAttribute("ad") AdvertisementCreateDto dto,
                          BindingResult br,
+                         Model model,
                          RedirectAttributes ra) {
         if (user == null) return "redirect:/auth/register";
         if (br.hasErrors()) {
+            model.addAttribute("mode", "create");
+            model.addAttribute("user", user);
             return "ads/form";
         }
         service.create(dto, user);
@@ -64,6 +68,7 @@ public class AdvertisementController {
         model.addAttribute("existingImages", ad.getImages());
         model.addAttribute("mode", "edit");
         model.addAttribute("adId", id);
+        model.addAttribute("user", user);
         return "ads/form";
     }
 
@@ -72,10 +77,15 @@ public class AdvertisementController {
                        @AuthenticationPrincipal User user,
                        @Valid @ModelAttribute("ad") AdvertisementCreateDto dto,
                        BindingResult br,
+                       Model model,
                        RedirectAttributes ra) {
         if (user == null) return "redirect:/auth/register";
         if (br.hasErrors()) {
             var ad = service.findById(id);
+            model.addAttribute("existingImages", ad.getImages());
+            model.addAttribute("mode", "edit");
+            model.addAttribute("adId", id);
+            model.addAttribute("user", user);
             return "ads/form";
         }
         try {

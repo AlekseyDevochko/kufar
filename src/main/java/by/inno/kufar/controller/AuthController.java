@@ -57,11 +57,11 @@ public class AuthController {
             bindingResult.rejectValue("confirmPassword", "password.mismatch",
                     "Пароли не совпадают");
         }
-        if (!userService.existsByUsername(dto.getUsername())) {
+        if (userService.existsByUsername(dto.getUsername())) {
             bindingResult.rejectValue("username", "username.exists",
                     "Пользователь с таким логином уже существует");
         }
-        if (!userService.existsByEmail(dto.getEmail())) {
+        if (userService.existsByEmail(dto.getEmail())) {
             bindingResult.rejectValue("email", "email.exists",
                     "Пользователь с таким email уже существует");
         }

@@ -17,8 +17,10 @@
             <div class="user-authenticated">
                 <a th:href="@{/cart}" class="header-cart" title="Корзина">🛒 Корзина</a>
                 <a th:href="@{/profile}" class="profile-link">
-                    <span class="avatar" th:text="${#authentication.name.substring(0,1).toUpperCase()}">U</span>
-                    <span class="username" th:text="${#authentication.name}">user</span>
+                    <!-- Безопасное получение первой буквы логина -->
+                    <span class="avatar"
+                          th:text="${user.username != null ? user.username.substring(0,1).toUpperCase() : 'U'}">U</span>
+                    <span class="username" th:text="${user.username}">user</span>
                 </a>
                 <form th:action="@{/auth/logout}" method="post">
                     <button type="submit" class="btn-logout">Выйти</button>
@@ -34,9 +36,17 @@
 
     <!-- Карточка профиля -->
     <section class="profile-card">
-        <div class="profile-avatar" th:text="${user.fullName.substring(0,1).toUpperCase()}">U</div>
+        <!-- Безопасное получение аватарки: берем из fullName, если он есть, иначе из username -->
+        <div class="profile-avatar"
+             th:text="${!#strings.isEmpty(user.fullName)
+                       ? #strings.substring(user.fullName, 0, 1).toUpperCase()
+                       : (user.username != null ? user.username.substring(0,1).toUpperCase() : 'U')}">
+            U
+        </div>
+
         <div class="profile-info">
-            <h1 th:text="${user.fullName}">Имя</h1>
+            <!-- Безопасный вывод имени -->
+            <h1 th:text="${!#strings.isEmpty(user.fullName) ? user.fullName : user.username}">Имя</h1>
             <p class="profile-username">@<span th:text="${user.username}"></span></p>
             <ul class="profile-meta">
                 <li>📧 <span th:text="${user.email}"></span></li>

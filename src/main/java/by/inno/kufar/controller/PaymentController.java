@@ -28,6 +28,7 @@ public class PaymentController {
             dto.setAmount(cartService.getTotal(user));
             model.addAttribute("card", dto);
         }
+        model.addAttribute("user", user);
         return "payment/card";
     }
 
@@ -37,6 +38,8 @@ public class PaymentController {
                       BindingResult br,
                       Model model) {
         if (user == null) return "redirect:/auth/login";
+        model.addAttribute("user", user);
+
         if (br.hasErrors()) {
             return "payment/card";
         }

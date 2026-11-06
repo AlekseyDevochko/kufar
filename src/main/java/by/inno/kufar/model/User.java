@@ -26,7 +26,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@NoArgsConstructor //(access = AccessLevel.PROTECTED, force = true)
 @Table(name = "users")
 public class User implements UserDetails {
     @Id

@@ -21,6 +21,7 @@ public class CartController {
     @GetMapping
     public String cart(@AuthenticationPrincipal User user, Model model) {
         if (user == null) return "redirect:/auth/login";
+        model.addAttribute("user", user);
         model.addAttribute("items", cartService.getItems(user));
         model.addAttribute("total", cartService.getTotal(user));
         return "cart";

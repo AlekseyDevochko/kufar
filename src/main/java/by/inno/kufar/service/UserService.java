@@ -40,11 +40,11 @@ public class UserService {
     }
 
     public boolean existsByEmail(String email) {
-        return userRepository.findByEmail(email).isEmpty();
+        return userRepository.findByEmail(email).isPresent();
     }
 
     public boolean existsByUsername(String username) {
-        return userRepository.findByUsername(username).isEmpty();
+        return userRepository.findByUsername(username).isPresent();
     }
 
     public User findByUsername(String username) {

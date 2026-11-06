@@ -39,6 +39,12 @@ public class ProfileController {
             return "redirect:/auth/register";
         }
         User fresh = userService.findByUsername(user.getUsername());
+
+        if (fresh == null) {
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+            return "redirect:/auth/login?error=deleted";
+        }
+
         List<AdvertisementDto> myAds = advertisementService.findBySeller(fresh.getId());
 
         model.addAttribute("user", user);
