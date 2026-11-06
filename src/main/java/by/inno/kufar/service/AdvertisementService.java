@@ -9,6 +9,8 @@ import by.inno.kufar.model.dto.AdvertisementDto;
 import by.inno.kufar.model.dto.AdvertisementFilterDto;
 import by.inno.kufar.repository.AdvertisementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +63,7 @@ public class AdvertisementService {
                 .map(entityMapper::toAdvertisementDto);
     }
 
+    @Cacheable(value = "advertisements", key = "#id")
     @Transactional(readOnly = true)
     public AdvertisementDto findById(Long id) {
         return advertisementRepository.findById(id)
@@ -74,6 +77,7 @@ public class AdvertisementService {
     }
 
     @Transactional
+    @CacheEvict(value = "advertisements-search", allEntries = true)
     public AdvertisementDto create(AdvertisementCreateDto dto, User seller) {
         Advertisement ad = new Advertisement();
         applyFields(ad, dto);
@@ -85,6 +89,7 @@ public class AdvertisementService {
     }
 
     @Transactional
+    @CacheEvict(value = "advertisements", key = "#id")
     public AdvertisementDto update(Long id, AdvertisementCreateDto dto, User owner) {
         Advertisement ad = advertisementRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Объявление не найдено"));
@@ -97,6 +102,7 @@ public class AdvertisementService {
     }
 
     @Transactional
+    @CacheEvict(value = "advertisements", key = "#id")
     public void delete(Long id, User owner) {
         Advertisement ad = advertisementRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Объявление не найдено"));

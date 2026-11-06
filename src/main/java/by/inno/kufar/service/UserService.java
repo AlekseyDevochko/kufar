@@ -6,6 +6,9 @@ import by.inno.kufar.model.dto.UserProfileUpdateDto;
 import by.inno.kufar.model.dto.UserRegistrationDto;
 import by.inno.kufar.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +52,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
     }
 
+    @Cacheable(value = "users", key = "#id")
     @Transactional(readOnly = true)
     public User findById(Long id) {
         return userRepository.findById(id)
@@ -56,6 +60,10 @@ public class UserService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "users", key = "#user.id"),
+            @CacheEvict(value = "advertisements-search", allEntries = true)
+    })
     public void updateProfile(String username, UserProfileUpdateDto dto) {
         User user = findByUsername(username);
         if (!user.getEmail().equals(dto.getEmail()) && existsByEmail(dto.getEmail())) {
